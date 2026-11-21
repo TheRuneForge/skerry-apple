@@ -46,9 +46,18 @@ public final class KnownHosts {
         return resolved + path.dropFirst(home.count)
     }
 
+    // Darwin exposes system directories through compatibility symlinks.
+    private static func canonicalSystemPrefix(_ path: String) -> String {
+        for prefix in ["/var", "/tmp"] where path == prefix || path.hasPrefix(prefix + "/") {
+            guard let resolved = try? PrivateFile.canonicalDirectory(prefix) else { return path }
+            return resolved + path.dropFirst(prefix.count)
+        }
+        return path
+    }
+
     // Keep every lookup anchored to an open directory; reject symlink ancestors.
     private static func openParent(_ path: String, create: Bool) -> Int32 {
-        let path = canonicalHomePrefix(path)
+        let path = canonicalSystemPrefix(canonicalHomePrefix(path))
         let parts = path.split(separator: "/").map(String.init)
         guard let name = parts.last, name != ".", name != ".." else { return -1 }
         var parent = open(path.hasPrefix("/") ? "/" : ".", O_RDONLY | O_DIRECTORY)
