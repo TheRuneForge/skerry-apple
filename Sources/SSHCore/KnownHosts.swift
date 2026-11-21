@@ -54,15 +54,19 @@ public final class KnownHosts {
         var parent = open(path.hasPrefix("/") ? "/" : ".", O_RDONLY | O_DIRECTORY)
         guard parent >= 0 else { return -1 }
         for component in parts.dropLast() {
-            if create {
+            // Existing ancestors (including system directories such as /tmp)
+            // must be opened, not mkdir'ed: their parent may intentionally be
+            // non-writable even though the directory itself is accessible.
+            var next = openat(parent, component, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
+            if next < 0, create, errno == ENOENT {
                 if mkdirat(parent, component, mode_t(0o700)) != 0 && errno != EEXIST {
                     let saved = errno
                     _ = close(parent)
                     errno = saved
                     return -1
                 }
+                next = openat(parent, component, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
             }
-            let next = openat(parent, component, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
             let saved = errno
             _ = close(parent)
             guard next >= 0 else { errno = saved; return -1 }
