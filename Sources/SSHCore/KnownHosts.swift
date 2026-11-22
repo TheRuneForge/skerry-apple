@@ -22,6 +22,11 @@ public final class KnownHosts {
 
     private let path: String?
     private let lock = NIOLock()
+
+    // NIOLock above protects one store instance. This shared lock also
+    // serializes appends from separate instances in this process; the sidecar
+    // flock below continues to coordinate independent processes.
+    private static let processAppendLock = NIOLock()
     private var entries: [String: String]
     private var storageUnavailable: Bool
 
@@ -158,6 +163,12 @@ public final class KnownHosts {
     private enum AppendResult { case appended, existing(String), failed }
 
     private func append(id: String, keyString: String) -> AppendResult {
+        Self.processAppendLock.withLock {
+            appendWhileProcessLocked(id: id, keyString: keyString)
+        }
+    }
+
+    private func appendWhileProcessLocked(id: String, keyString: String) -> AppendResult {
         guard let path else { return .appended } // Explicit in-memory mode for tests.
         let parent = Self.openParent(path, create: true)
         guard parent >= 0 else { return .failed }
