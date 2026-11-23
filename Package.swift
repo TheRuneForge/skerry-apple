@@ -19,7 +19,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio-ssh.git", from: "0.15.1"),
         // Pinned exactly: newer releases fail to compile on Windows under Swift 6 strict concurrency.
         .package(url: "https://github.com/apple/swift-nio.git", exact: "2.105.0"),
-        .package(url: "https://github.com/apple/swift-crypto.git", from: "5.1.1"),
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "5.1.2"),
     ],
     targets: [
         .target(
