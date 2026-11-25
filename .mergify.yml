@@ -1,31 +1,17 @@
-merge_queue:
-  mode: serial
-  max_parallel_checks: 1
-  queue_controls_comment: true
-  status_comments: outcomes
+# GitHub's native merge queue remains authoritative for main.
+# Mergify's merge queue is intentionally not configured here: the active
+# GitHub merge_queue ruleset blocks Mergify merges unless that ruleset is
+# deliberately migrated. Keep one queue responsible for merging.
 
-queue_rules:
-  - name: main
-    merge_method: squash
-    batch_size: 5
-    queue_conditions:
+merge_protections:
+  - name: Skerry CI
+    description: Require the test suite to pass before merge.
+    if:
       - base = main
-      - -draft
-    merge_conditions:
-      - base = main
+    success_conditions:
       - check-success = test
 
-priority_rules:
-  - name: security-updates
-    conditions:
-      - base = main
-      - label = security
-    priority: high
-
-pull_request_rules:
-  - name: automatically queue pull requests
-    conditions:
-      - base = main
-      - -draft
-    actions:
-      queue:
+merge_protections_settings:
+  post_comment: true
+  reporting_method: check-runs
+  # GitHub's native merge queue owns the merge decision.
