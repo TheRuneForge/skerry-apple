@@ -13,7 +13,16 @@
     {
       "description": "Wait for newly published packages to age before updating",
       "matchPackageNames": ["*"],
-      "minimumReleaseAge": "7 days"
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required"
+    },
+    {
+      "description": "Use GitHub Release publication dates for Swift dependencies instead of tag commit dates",
+      "matchManagers": ["swift"],
+      "matchDatasources": ["github-tags"],
+      "overrideDatasource": "github-releases",
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required"
     },
     {
       "description": "Automerge non-major updates once all required checks pass",
