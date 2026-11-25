@@ -35,7 +35,7 @@ Whenever CodeRabbit, CodeQL, another automated tool, a test, or a human review i
 - Trace relevant callers, callees, dependencies, data flows, error paths, state transitions, and related features.
 - Search the repository for other occurrences of the same pattern and for related defects.
 - Review the wider codebase wherever the issue could have systemic implications.
-- Identify and fix all confirmed defects discovered during the investigation, not merely the original finding.
+- Identify and fix all confirmed defects within the requested scope. Report unrelated defects with supporting evidence and obtain authorization before expanding scope.
 - Add or update regression tests where appropriate.
 - Re-run relevant tests, builds, linters, static analysis, and security checks after the fixes.
 - Review the resulting changes again. Repeat the investigation and verification cycle until no known actionable issues remain.
