@@ -1,3 +1,6 @@
+# Mergify automatically queues ready PRs once the repository's ruleset
+# is migrated off GitHub's native merge_queue rule.
+
 merge_protections_settings:
   auto_merge_conditions: true
   post_comment: true
