@@ -11,6 +11,11 @@
   ],
   "packageRules": [
     {
+      "description": "Wait for newly published packages to age before updating",
+      "matchPackageNames": ["*"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
       "description": "Automerge non-major updates once all required checks pass",
       "matchUpdateTypes": [
         "minor",
