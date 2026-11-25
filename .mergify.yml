@@ -13,3 +13,11 @@ queue_rules:
       - base = main
     merge_conditions:
       - check-success = test
+
+pull_request_rules:
+  - name: automatically queue ready pull requests
+    conditions:
+      - base = main
+      - -draft
+    actions:
+      queue:
