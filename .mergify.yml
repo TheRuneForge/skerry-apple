@@ -1,23 +1,17 @@
-# Mergify automatically queues ready PRs once the repository's ruleset
-# is migrated off GitHub's native merge_queue rule.
+# GitHub's native merge queue remains authoritative for main.
+# Mergify's merge queue is intentionally not configured here: the active
+# GitHub merge_queue ruleset blocks Mergify merges unless that ruleset is
+# deliberately migrated. Keep one queue responsible for merging.
 
-merge_protections_settings:
-  auto_merge_conditions: true
-  post_comment: true
-  reporting_method: check-runs
-
-queue_rules:
-  - name: default
-    merge_method: squash
-    queue_conditions:
+merge_protections:
+  - name: Skerry CI
+    description: Require the test suite to pass before merge.
+    if:
       - base = main
-    merge_conditions:
+    success_conditions:
       - check-success = test
 
-pull_request_rules:
-  - name: automatically queue ready pull requests
-    conditions:
-      - base = main
-      - -draft
-    actions:
-      queue:
+merge_protections_settings:
+  post_comment: true
+  reporting_method: check-runs
+  # GitHub's native merge queue owns the merge decision.
