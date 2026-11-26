@@ -28,14 +28,17 @@ jobs:
         run: swift build
       - name: Unit tests
         id: tests
-        run: swift test --xunit-output .build/junit.xml
+        shell: bash
+        run: swift test 2>&1 | tee .build/swift-test.log
       - name: CLI password prompt test
         run: python3 Tests/cli_password_prompt_test.py
       - name: Mergify Test Engine Upload
-        if: (success() || failure()) && (!github.event.pull_request || github.event.pull_request.head.repo.full_name == github.repository) && hashFiles('.build/junit.xml') != ''
+        if: (success() || failure()) && (!github.event.pull_request || github.event.pull_request.head.repo.full_name == github.repository) && hashFiles('.build/swift-test.log') != ''
         env:
           MERGIFY_TEST_EXIT_CODE: ${{ steps.tests.outcome == 'success' && '0' || '1' }}
         run: |
+          command -v xcbeautify >/dev/null || brew install xcbeautify
+          xcbeautify --quiet --report junit --report-path .build --junit-report-filename junit.xml < .build/swift-test.log > /dev/null
           python3 -m venv "$RUNNER_TEMP/mergify-cli"
           "$RUNNER_TEMP/mergify-cli/bin/pip" install --disable-pip-version-check --quiet mergify-cli==2026.11.16
           "$RUNNER_TEMP/mergify-cli/bin/mergify" ci junit-process .build/junit.xml
