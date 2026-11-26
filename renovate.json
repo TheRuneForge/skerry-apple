@@ -17,6 +17,14 @@
       "minimumReleaseAgeBehaviour": "timestamp-required"
     },
     {
+      "description": "Age GitHub Actions updates using release publication dates, not commit dates",
+      "matchManagers": ["github-actions"],
+      "matchDatasources": ["github-tags"],
+      "overrideDatasource": "github-releases",
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required"
+    },
+    {
       "description": "Use GitHub Release publication dates for Swift dependencies instead of tag commit dates",
       "matchManagers": ["swift"],
       "matchDatasources": ["github-tags"],
