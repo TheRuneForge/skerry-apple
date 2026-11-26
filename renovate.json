@@ -12,22 +12,32 @@
   "packageRules": [
     {
       "description": "Wait for newly published packages to age before updating",
-      "matchPackageNames": ["*"],
+      "matchPackageNames": [
+        "*"
+      ],
       "minimumReleaseAge": "7 days",
       "minimumReleaseAgeBehaviour": "timestamp-required"
     },
     {
       "description": "Age GitHub Actions updates using release publication dates, not commit dates",
-      "matchManagers": ["github-actions"],
-      "matchDatasources": ["github-tags"],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDatasources": [
+        "github-tags"
+      ],
       "overrideDatasource": "github-releases",
       "minimumReleaseAge": "7 days",
       "minimumReleaseAgeBehaviour": "timestamp-required"
     },
     {
       "description": "Use GitHub Release publication dates for Swift dependencies instead of tag commit dates",
-      "matchManagers": ["swift"],
-      "matchDatasources": ["github-tags"],
+      "matchManagers": [
+        "swift"
+      ],
+      "matchDatasources": [
+        "github-tags"
+      ],
       "overrideDatasource": "github-releases",
       "minimumReleaseAge": "7 days",
       "minimumReleaseAgeBehaviour": "timestamp-required"
@@ -42,28 +52,39 @@
         "digest",
         "lockFileMaintenance"
       ],
-      "automerge": true
+      "automerge": true,
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required"
     },
     {
       "description": "swift-nio is pinned exactly: newer releases fail to compile on Windows under Swift 6 strict concurrency",
       "matchPackageNames": [
         "/apple\\/swift-nio(\\.git)?$/"
       ],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required"
     },
     {
       "description": "Keep swift-nio minor/patch updates out of the shared non-major group so their approval does not block other updates",
       "matchPackageNames": [
         "/apple\\/swift-nio(\\.git)?$/"
       ],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "swift-nio non-major",
-      "groupSlug": "swift-nio-non-major"
+      "groupSlug": "swift-nio-non-major",
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required"
     }
   ],
   "vulnerabilityAlerts": {
     "addLabels": [
       "security"
     ]
-  }
+  },
+  "minimumReleaseAge": "7 days",
+  "minimumReleaseAgeBehaviour": "timestamp-required"
 }

@@ -7,6 +7,7 @@ const vm = require('node:vm');
 
 function prototype() {
   const html = fs.readFileSync(path.join(__dirname, '../../docs/prototype/skerry-gui.html'), 'utf8');
+  // This checked-in fixture is trusted local prototype HTML, not remote or user-controlled input.
   const open = html.indexOf('<script>');
   assert.notEqual(open, -1, 'the prototype has no opening <script> tag');
   const start = open + '<script>'.length;
@@ -23,6 +24,7 @@ function prototype() {
     },
     addEventListener(type, listener) { listeners[type] = listener; }
   };
+  // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag
   vm.runInNewContext(script, { document, setTimeout });
   function act(act, id) {
     listeners.click({ target: { closest: () => ({ dataset: { act, id } }) } });
