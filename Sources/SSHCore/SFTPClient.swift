@@ -126,7 +126,15 @@ public actor SFTPClient {
         let completeOnce = OneShot()
 
         channel.closeFuture.whenComplete { _ in
-            completeOnce.run { resultPromise.fail(SSHError.channelFailed("anslutningen stängdes")) }
+            // Authentication rejection can signal fatalFuture on the same
+            // event loop immediately before the transport closes. Defer the
+            // generic close error one event-loop turn so the typed fatal error
+            // gets first chance to complete the result.
+            channel.eventLoop.execute {
+                completeOnce.run {
+                    resultPromise.fail(SSHError.channelFailed("anslutningen stängdes"))
+                }
+            }
         }
         session.fatalFuture.whenSuccess { error in
             completeOnce.run { resultPromise.fail(error) }
