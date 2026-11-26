@@ -29,11 +29,13 @@ jobs:
       - name: Unit tests
         id: tests
         run: swift test --xunit-output .build/junit.xml
-      - name: Mergify Test Engine Upload
-        if: (success() || failure()) && (!github.event.pull_request || github.event.pull_request.head.repo.full_name == github.repository) && hashFiles('.build/junit.xml') != ''
-        uses: mergifyio/gha-mergify-ci@v30
-        with:
-          report_path: .build/junit.xml
-          test_step_outcome: ${{ steps.tests.outcome }}
       - name: CLI password prompt test
         run: python3 Tests/cli_password_prompt_test.py
+      - name: Mergify Test Engine Upload
+        if: (success() || failure()) && (!github.event.pull_request || github.event.pull_request.head.repo.full_name == github.repository) && hashFiles('.build/junit.xml') != ''
+        env:
+          MERGIFY_TEST_EXIT_CODE: ${{ steps.tests.outcome == 'success' && '0' || '1' }}
+        run: |
+          python3 -m venv "$RUNNER_TEMP/mergify-cli"
+          "$RUNNER_TEMP/mergify-cli/bin/pip" install --disable-pip-version-check --quiet mergify-cli==2026.11.16
+          "$RUNNER_TEMP/mergify-cli/bin/mergify" ci junit-process .build/junit.xml
