@@ -7,6 +7,7 @@ const vm = require('node:vm');
 
 function prototype() {
   const html = fs.readFileSync(path.join(__dirname, '../../docs/prototype/skerry-gui.html'), 'utf8');
+  // nosemgrep: javascript.lang.security.audit.unknown-value-with-script-tag -- This is a checked-in prototype fixture; no remote or user-controlled HTML is evaluated.
   const open = html.indexOf('<script>');
   assert.notEqual(open, -1, 'the prototype has no opening <script> tag');
   const start = open + '<script>'.length;
