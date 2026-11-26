@@ -8,7 +8,6 @@
 
 ## Workflow
 
-- Never change workflows. Only Renovate and Dependabot may.
 - Never work around rulesets, checks or branch rules.
 - Ask before deviating from a tool's standard setup.
 
